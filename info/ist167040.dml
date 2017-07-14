@@ -1,0 +1,91 @@
+package pt.tecnico.mydrive.domain;
+
+/*CLASSES*/
+
+class MyDrive {
+	int fileNumber;
+	int userNumber;
+}
+
+class Utilizador {
+	string username;
+	string name;
+	string password;
+	string mask;
+	boolean root;
+}
+
+class File {
+	int id;
+	string name;
+	DateTime altDate;
+}
+
+class PlainFile extends File;
+
+class Dir extends File {
+	boolean root;
+	int size;
+}
+
+class Permissions {
+	boolean read;
+	boolean write;
+	boolean exec;
+	boolean remove;
+}
+
+class Link extends PlainFile;
+
+class App extends PlainFile;
+
+
+/* RELATIONS */
+
+relation DomainRootHasMyDriveApplication {    /*ou so MyDrive? */
+	.pt.ist.fenixframework.DomainRoot playsRole root {
+    multiplicity 0..1;
+    }
+    MyDrive playsRole myDriveRoot {
+    multiplicity 0..1;
+  }
+}
+
+relation MyDriveContainsUser {
+	MyDrive playsRole mydrive {
+		multiplicity 0..1;
+	}
+	User playsRole user {
+		multiplicity *;
+	}
+}
+
+relation UserContainsFile
+{
+	User playsRole owner {
+	    multiplicity 0..1;
+	}
+	File playsRole ownedfile {
+		multiplicity *;
+	}
+}
+
+relation UserContainsPermissions
+{
+	User playsRole userhaspermissions {
+    	multiplicity 0..1;
+	}
+	Permissions playsRole userpermissions {
+		multiplicity *;
+	}
+}
+
+relation PermissionsContainsFile
+{
+	Permissions playsRole permissionsfile {
+		multiplicity *;
+	}
+	File playsRole filepermissions {
+   		multiplicity 0..1;
+	}	
+}

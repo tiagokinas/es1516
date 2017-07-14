@@ -1,0 +1,108 @@
+package pt.tecnico.projeto.domain;
+
+class MyDrive {
+	int nFiles; 
+}
+
+
+class User {
+	String username;
+	String password;
+	String name;
+	String mask; 
+	Dir dir;
+	boolean root;
+}
+
+
+class File {
+	int id;
+	string name;
+	Dir dir;
+	User user;
+	DateTime dataMod;
+	boolean read;
+	boolean write;
+	boolean execute;
+	boolean delete;
+}
+
+class PlainFile extends File;
+
+class Dir extends File {
+	ArrayList files;
+	int dim;
+
+}
+
+class Link extends PlainFile{
+	String content;
+}
+
+class App extends PlainFile{
+	String content;
+};
+
+relation DomainRootHasMyDrive 
+{
+  .pt.ist.fenixframework.DomainRoot playsRole root {
+    multiplicity 0..1;
+  }
+  MyDrive playsRole mydriveRoot {
+    multiplicity 0..1;
+  }
+}
+
+relation MyDriveContainsUser
+{
+	MyDrive playsRole mydrive {
+   		multiplicity 0..1;
+	}
+	User playsRole user {
+		multiplicity 0..1;
+	}
+}
+
+relation MyDriveContainsFile
+{
+	MyDrive playsRole mydrive {
+   		multiplicity 0..1;
+	}
+	File playsRole file {
+		multiplicity 0..1;
+	}
+}
+
+
+relation UserContainsFile
+{
+	User playsRole owner {
+	    multiplicity 0..1;
+	}
+	File playsRole owned {
+		multiplicity *;
+	}
+}
+
+relation DirContainsFile
+{
+	Dir playsRole dir {
+	    multiplicity 0..1;
+	}
+	File playsRole owned {
+		multiplicity *;
+	}
+}
+
+
+
+
+relation PermissoesContainsFicheiro
+{
+	Permissoes playsRole permissoesficheiro {
+		multiplicity *;
+	}
+	Ficheiro playsRole fficheiropermissoes {
+   		multiplicity 0..1;
+	}	
+}

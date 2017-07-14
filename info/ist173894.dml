@@ -1,0 +1,102 @@
+package pt.tecnico.projeto.domain;
+
+/* CLASSES */
+
+class MyDrive; 
+
+class FileSystem {   /* não tenho a certeza */
+	int numerodeutilizadores;
+}
+
+class Utilizador {
+	string username;
+	string nome;
+	string password;
+	string mask; /* não tenho a certeza */
+	boolean root;
+}
+
+class Permissoes {
+	boolean leitura;
+	boolean escrita;
+	boolean execucao;
+	boolean eliminacao;
+}
+
+class Ficheiro {
+	int id;
+	string nome;
+	DateTime dataMod;
+}
+
+class FicheirodeTexto extends Ficheiro;
+
+class Directoria extends Ficheiro {
+	int dimensao;
+}
+
+class Ligacao extends FicheirodeTexto;
+
+class Aplicacao extends FicheirodeTexto;
+
+/* RELAÇÕES */
+
+relation DomainRootHasMyDrive 
+{
+  .pt.ist.fenixframework.DomainRoot playsRole root {
+    multiplicity 0..1;
+  }
+  MyDrive playsRole mydriveRoot {
+    multiplicity 0..1;
+  }
+}
+
+relation MyDriveContainsFileSystem
+{
+	MyDrive playsRole mydrive {
+   		multiplicity 0..1;
+	}
+	FileSystem playsRole filesystem {
+		multiplicity *;
+	}
+}
+
+relation FileSystemContainsUtilizador
+{
+	FileSystem playsRole filesystem {
+   		multiplicity 0..1;
+	}
+	Utilizador playsRole utilizador {
+		multiplicity *;
+	}
+}
+
+relation UtilizadorContainsFicheiro
+{
+	Utilizador playsRole dono {
+	    multiplicity 0..1;
+	}
+	Ficheiro playsRole ficheiropossuido {
+		multiplicity *;
+	}
+}
+
+relation UtilizadorContainsPermissoes
+{
+	Utilizador playsRole utilizadorpermissoes {
+    	multiplicity 0..1;
+	}
+	Permissoes playsRole permissoesutilizador {
+		multiplicity *;
+	}
+}
+
+relation PermissoesContainsFicheiro
+{
+	Permissoes playsRole permissoesficheiro {
+		multiplicity *;
+	}
+	Ficheiro playsRole fficheiropermissoes {
+   		multiplicity 0..1;
+	}	
+}

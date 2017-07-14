@@ -1,0 +1,219 @@
+package pt.tecnico.mydrive.domain;
+
+/* CLASSES */
+
+
+class MyDrive{
+	int numberOfUsers;
+	int numberOfFiles;
+} 
+
+class User {
+	String username;
+	String name;
+	String password;
+	String homedir;
+	String mask;
+}
+
+class RootUser extends User;
+
+class GuestUser extends User;
+
+//Professor disse para eliminar esta classe
+//E juntar o codigo de MyToken a classe session
+class MyToken {
+	DateTime initialDate;
+	long token;
+}
+
+class Session;
+
+class File {
+	int id;
+	String path;
+	String name;
+	DateTime datamod;
+}
+
+class PlainFile extends File{
+	String content;	
+}
+
+//atributos da classe apagados pois ja estao definidos
+//noutros sitios directoryname vem de file,
+//parent da relacao directorycontainsfiles
+
+class Directory extends File {
+}
+
+class Link extends PlainFile;
+
+class Application extends PlainFile{
+	String method;
+}
+
+
+/* RELATIONS */
+
+//NECESSARIO CORRIGIR TODOS OS NOMES DUPLICADOS NAS RELACOES
+//POSTERIORMENTE MODIFICAR ESSES NOMES NO CODIGO DAS CLASSES
+
+relation MyTokenContainsUser {
+
+	MyToken playsRole mytoken {
+		multiplicity 0..1;
+	}
+
+	User playsRole user {
+		multiplicity 0..1;
+	}
+}
+
+relation MyDriveContainsSession
+{
+	MyDrive playsRole myDrive {
+   		multiplicity 1..1;
+	}
+	Session playsRole session {
+		multiplicity 0..1;
+	}
+}
+
+relation DomainRootHasMyDrive {
+  .pt.ist.fenixframework.DomainRoot playsRole root {
+    multiplicity 0..1;
+  }
+  MyDrive playsRole mydrive {
+    multiplicity 0..1;
+  }
+}
+
+relation MyDriveContainsUsers{
+	MyDrive playsRole mydrive {
+   		multiplicity 1..1;
+	}
+	User playsRole user {
+		multiplicity *;
+	}
+}
+
+relation UserContainsFiles{
+	User playsRole owner {
+		multiplicity 1..1;
+	} 
+	File playsRole file {
+		multiplicity *;
+	}
+}
+
+relation SessionContainsMyToken
+{
+	Session playsRole session {
+		multiplicity 0..1;
+	}
+
+	MyToken playsRole mytoken {
+		multiplicity *;
+	}
+}
+
+/*um user pode ter varias sessoes*/
+relation SessionContainsUser {
+	Session playsRole session {
+    	multiplicity 0..1;
+  	}
+  	User playsRole userInSession {
+    	multiplicity 1..1;
+  	} 
+}
+
+relation DirectoryContainsFiles{
+//mudar dir para parent (conselho do prof para conseguirmos identificar)
+//se mudarmos nomes nao esquecer de mudar tanto nas classes 
+//como nos servicos como nos testes
+
+	Directory playsRole dir{
+	    multiplicity 1..1;
+	}
+	File playsRole owned {
+		multiplicity *;
+	}
+}
+
+/**
+ * este codigo aparenta estar a mais. verifiquem sff.
+relation UserHasHomeDir{
+	User playsRole user {
+		multiplicity 0..1;
+	}
+
+	Directory playsRole directory {
+		multiplicity 1..1;
+	}
+}*/
+//Onde diz "RELACAO A MAIS" sao relacao que nao sao necessarias 
+//pois vai se buscar a partir do UserContainsFiles
+
+//RELACAO A MAIS
+relation UserHasPlainFile{
+	User playsRole user {
+		multiplicity 1..1;
+	}
+
+	PlainFile playsRole plainfile {
+		multiplicity 0..*;
+	}
+}
+
+
+//RELACAO A MAIS
+relation UserHasDirectory{
+	User playsRole user {
+		multiplicity 1..1;
+	}
+
+	Directory playsRole directory {
+		multiplicity 0..*;
+	}
+}
+
+/*pode ser necessaria a criacao de um rootDir*/
+relation MyDriveHasRootDir{
+	MyDrive playsRole mydrive {
+		multiplicity 1..1;
+	}
+	Directory playsRole directory {
+		multiplicity 0..1;
+	}
+}
+
+relation SessionHasWorkingDirectory{
+	Session playsRole session {
+		multiplicity 0..1;
+	}
+
+	Directory playsRole workingdirectory {
+		multiplicity 1..1;
+	}
+}
+
+relation MyDriveContainsFile
+{
+	MyDrive playsRole mydrive {
+   		multiplicity 0..1;
+	}
+	File playsRole file {
+		multiplicity *;
+	}
+}
+
+relation MyDriveContainsPlainFile
+{
+	MyDrive playsRole mydrive {
+   		multiplicity 0..1;
+	}
+	PlainFile playsRole plainfile {
+		multiplicity *;
+	}
+}
